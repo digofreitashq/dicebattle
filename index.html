@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dice Battle - An VueJS Study Project</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/battle.css">
+</head>
+
+<body>
+    <audio id="sound_theme" loop>
+        <source src="assets/theme.wav" type="audio/wav" />
+    </audio>
+    <audio id="sound_damage">
+        <source src="assets/damage.wav" type="audio/wav" />
+    </audio>
+    <audio id="sound_fail">
+        <source src="assets/fail.wav" type="audio/wav" />
+    </audio>
+    <audio id="sound_potion">
+        <source src="assets/potion.wav" type="audio/wav" />
+    </audio>
+    <audio id="sound_alert">
+        <source src="assets/alert.wav" type="audio/wav" />
+    </audio>
+    <audio id="sound_click">
+        <source src="assets/click.wav" type="audio/wav" />
+    </audio>
+    <audio id="sound_action">
+        <source src="assets/action.wav" type="audio/wav" />
+    </audio>
+
+    <div id="app" class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-sm-12 green-border">
+                <div id="header" class="row">
+                    <div id="title" class="col-md-12 text-center">
+                        VUEJS DICE BATTLE (v{{version}}) - A GAME BY 
+                        <a href="https://twitter.com/digofreitashq">
+                            @DIGOFREITASHQ
+                        </a>
+                    </div>
+                    <div class="col-sm-6 text-left">
+                        <player-life
+                            :player_life="player_life"
+                            :player_life_total="player_life_total"
+                        />
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <monster-life
+                            :monster_life="monster_life"
+                            :monster_life_total="monster_life_total"
+                        />
+                    </div>
+                </div>
+                <div id="body" class="text-center">
+                    <div id="drawing">
+                    ...............................................#####.....<br>
+                    .............................................##.....###..<br>
+                    ........###................................##.........##.<br>
+                    ........###........##.....................#..........##..<br>
+                    ....#########....##...............................###....<br>
+                    ..##..#####.#..##............................######......<br>
+                    .##..######..##...............#...##################.....<br>
+                    ....###..####...............#########################....<br>
+                    ...###.....##.............#####....###.#####...##...###..<br>
+                    ~~###~~~~~~###~~~~~~~~~~~~~~~~~~~###~~~~##~~~~~##~~~~~##~<br>
+                    ~####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###~~~~~~~~~~~~###~
+                    </div>
+                </div>
+                <div id="hud" class="row">
+                    <div class="col-md-12">
+                        <status 
+                            :game_finished="game_finished"
+                            :game_waiting="game_waiting"
+                            :game_ready="game_ready"
+                            :game_resolving="game_resolving"
+                            :player_win="player_win"
+                            :monster_win="monster_win"
+                        />
+                    </div>
+                    <template v-if="game_waiting">
+                        <div class="col-md-12 col-sm-12">
+                            <btn-start />
+                        </div>
+                    </template>
+                    <template v-if="game_ready">
+                        <div class="col-md-6 col-sm-6">
+                            <btn-attack
+                                :game_resolving="game_resolving"
+                            />
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <btn-potion 
+                                :player_potions="player_potions"
+                                :game_resolving="game_resolving"
+                            />
+                        </div>
+                    </template>
+                    <template v-if="game_finished">
+                        <div class="col-md-12 col-sm-12">
+                            <btn-restart />
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12 green-border">
+                <div id="header" class="row">
+                    <div id="title_reversed" class="col-md-12 text-center">
+                        HISTORY LOG
+                    </div>
+                </div>
+                <div id="body">
+                    <history>
+                        <log 
+                            v-for="log_text in log_list"
+                            v-bind:log_text="log_text"
+                        />
+                    </history>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/vue@2.js"></script>
+    <script src="js/queue.js"></script>
+    <script src="js/dice.js"></script>
+    <script src="js/battle.js"></script>
+</body>
+
+</html>

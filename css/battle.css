@@ -1,0 +1,147 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8pt;
+    background-color: #1b1a22;
+    color: #67c44d;
+    scrollbar-color: #67c44d #1b1a22;
+    padding: 0;
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+a, a:hover, a:visited {
+    color: #1b1a22;
+}
+
+#btn_attack,
+#btn_potion {
+    display: block;
+}
+
+#title {
+    font-size: 16pt;
+    font-weight: bold;
+    background-color: #67c44d;
+    color: #1b1a22;
+}
+
+#title_reversed {
+    font-size: 16pt;
+    font-weight: bold;
+    background-color: #1b1a22;
+    color: #67c44d;
+    box-shadow: 0px 0px 0px 2px #67c44d inset;
+}
+
+#hud {
+    background-color: #67c44d;
+    color: #1b1a22;
+    padding-bottom: 20px;
+}
+
+#history {
+    min-height: 40px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.screen {
+    height: 300px;
+}
+
+.life-display {
+    font-size: 16pt;
+}
+
+.status {
+    text-align: center;
+    font-size: 16pt;
+    font-weight: bold;
+    height: 25px;
+}
+
+.green-border {
+    box-shadow: 0px 0px 0px 2px #67c44d inset;
+}
+
+button {
+    outline: none;
+}
+
+.custom-btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16pt;
+    font-weight: bold;
+    border: none;
+    background: #1b1a22;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 20px;
+}
+
+.btn-square {
+    position: relative;
+    color: #67c44d;
+}
+
+.btn-square:hover {
+    border: none;
+    background-color: #67c44d;
+    color: #1b1a22;
+}
+
+.custom-btn.disabled {
+    border: none;
+    background-color: #67c44d;
+    color: #1b1a22;
+    cursor: default;
+    outline: 0;
+}
+
+.btn-square.disabled:hover {
+    border: none;
+    background-color: #67c44d;
+    color: #1b1a22;
+    outline: 0;
+}
+
+.btn-square.disabled:focus {
+    outline: 0;
+}
+
+@media (max-width: 1000px) {
+    #title {
+        font-size: 20pt;
+    }
+    #title_reversed {
+        box-shadow: 0px 0px 0px 2px #67c44d inset;
+        font-size: 30pt;
+    }
+    #history {
+        max-height: 600px;
+        font-size: 30pt;
+    }
+    #drawing {
+        font-size: 20pt;
+    }
+    #status {
+        font-size: 30pt;
+        min-height: 60px;
+    }
+    .life-display {
+        font-size: 40pt;
+    }
+    .custom-btn {
+        font-size: 30pt;
+    }
+}
