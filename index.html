@@ -2,40 +2,24 @@
 <html>
 
 <head>
-    <title>Dice Battle - An VueJS Study Project</title>
+    <title>Dice Battle - An Vue.js Study Project</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/battle.css">
 </head>
 
 <body>
-    <audio id="sound_theme" loop>
-        <source src="assets/theme.wav" type="audio/wav" />
-    </audio>
-    <audio id="sound_damage">
-        <source src="assets/damage.wav" type="audio/wav" />
-    </audio>
-    <audio id="sound_fail">
-        <source src="assets/fail.wav" type="audio/wav" />
-    </audio>
-    <audio id="sound_potion">
-        <source src="assets/potion.wav" type="audio/wav" />
-    </audio>
-    <audio id="sound_alert">
-        <source src="assets/alert.wav" type="audio/wav" />
-    </audio>
-    <audio id="sound_click">
-        <source src="assets/click.wav" type="audio/wav" />
-    </audio>
-    <audio id="sound_action">
-        <source src="assets/action.wav" type="audio/wav" />
-    </audio>
-
     <div id="app" class="container-fluid">
+        <game-sound
+            v-for="sound in sound_list"
+            :sound="sound[0]"
+            :loop="sound[1]"
+        ></game-sound>
+
         <div class="row">
             <div class="col-lg-6 col-sm-12 green-border">
                 <div id="header" class="row">
                     <div id="title" class="col-md-12 text-center">
-                        VUEJS DICE BATTLE (v{{version}}) - A GAME BY 
+                        VUE.JS DICE BATTLE (v{{version}}) - A GAME BY 
                         <a href="https://twitter.com/digofreitashq">
                             @DIGOFREITASHQ
                         </a>
@@ -115,7 +99,7 @@
                     <history>
                         <log 
                             v-for="log_text in log_list"
-                            v-bind:log_text="log_text"
+                            :log_text="log_text"
                         />
                     </history>
 
@@ -124,10 +108,10 @@
         </div>
     </div>
 
-    <script src="js/vue@2.js"></script>
-    <script src="js/queue.js"></script>
-    <script src="js/dice.js"></script>
-    <script src="js/battle.js"></script>
+    <script src="./js/vue@2.js"></script>
+    <script src="./js/queue.js"></script>
+    <script src="./js/dice.js"></script>
+    <script src="./js/battle.js"></script>
 </body>
 
 </html>

@@ -48,8 +48,10 @@ function queueRunner(manager) {
 
   try {
     var item = manager.queue.dequeue();
+    if (typeof item == "undefined") return;
     item[0](...item[1]);
   } catch (e) {
-    console.log(e)
+    console.log(item);
+    console.log(e);
   }
 }

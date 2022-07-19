@@ -1,11 +1,5 @@
-// Sound elements variables
-var sound_theme = document.getElementById('sound_theme');
-var sound_damage = document.getElementById('sound_damage');
-var sound_fail = document.getElementById('sound_fail');
-var sound_potion = document.getElementById('sound_potion');
-var sound_alert = document.getElementById('sound_alert');
-var sound_click = document.getElementById('sound_click');
-var sound_action = document.getElementById('sound_action');
+// Sounds
+var sounds = {};
 
 // Execution Queue variables
 var queue_manager = null;
@@ -27,12 +21,11 @@ function enqueue_execution(func, params) {
     if (!params) params = [];
     if (!Array.isArray(params)) params = [params];
     queue_manager.put([func, params]);
-    //func(...params)
 }
 
 function play_sound(sound_name) {
     // Play a sound
-    document.querySelector('#sound_'+sound_name).play();
+    sounds[sound_name].play();
 }
 
 function do_log(text) {
@@ -49,13 +42,13 @@ function do_log_with_sound(text, sound){
 function log_damage_reaction(damage) {
     // Log commentary about the amount of damage
     if (damage < 5) {
-        enqueue_execution(do_log('A little push.'));
+        enqueue_execution(do_log, ['A little push.']);
     } else if (damage < 10) {
-        enqueue_execution(do_log('Maybe that hurt...'));
+        enqueue_execution(do_log, ['Maybe that hurt...']);
     } else if (damage < 20) {
-        enqueue_execution(do_log('That will leave a nice scar.'));
+        enqueue_execution(do_log, ['That will leave a nice scar.']);
     } else {
-        enqueue_execution(do_log('Ouch! Will they recover from that one?'));
+        enqueue_execution(do_log, ['Ouch! Will they recover from that one?']);
     }
 }
 
@@ -64,8 +57,8 @@ function check_player_life() {
     
     // Player dies at 0 life
     if (app.player_is_dead) {
-        enqueue_execution(do_log('Player DIED..'));
-        enqueue_execution(do_log('YOU LOSE!'));
+        enqueue_execution(do_log, ['Player DIED..']);
+        enqueue_execution(do_log, ['YOU LOSE!']);
         enqueue_execution(set_game_result, [false, true]);
         return;
     }
@@ -94,8 +87,8 @@ function check_monster_life() {
 
     // Monster dies at 0 life
     if (app.monster_is_dead) {
-        enqueue_execution(do_log('Monster DIED...'));
-        enqueue_execution(do_log('YOU WIN!'));
+        enqueue_execution(do_log, ['Monster DIED...']);
+        enqueue_execution(do_log, ['YOU WIN!']);
         enqueue_execution(set_game_result, [true, false]);
         return;
     }
@@ -129,7 +122,7 @@ function do_monster_damage(damage) {
 function do_player_restore_life(restore) {
     // Execute Player Life Restore
     set_player_life(app.player_life + restore);
-    enqueue_execution(do_log('** Player restores ' + restore + ' HP!'));
+    enqueue_execution(do_log, ['** Player restores ' + restore + ' HP!']);
 }
 
 function compute_monster_damage_taken() {
@@ -138,11 +131,11 @@ function compute_monster_damage_taken() {
     var monster_total_toughness = app.monster_toughness + app.monster_rolled.total;
 
     enqueue_execution(
-        do_log('ATK ' + app.player_attack + ' + ' + app.player_rolled.total + 
-        ' = ' + player_total_attack));
+        do_log, ['ATK ' + app.player_attack + ' + ' + app.player_rolled.total + 
+        ' = ' + player_total_attack]);
     enqueue_execution(
-        do_log('DEF ' + app.monster_toughness + ' + ' + app.monster_rolled.total + 
-        ' = ' + monster_total_toughness));
+        do_log, ['DEF ' + app.monster_toughness + ' + ' + app.monster_rolled.total + 
+        ' = ' + monster_total_toughness]);
 
     if (player_total_attack > monster_total_toughness) {
         var damage = player_total_attack - monster_total_toughness;
@@ -159,11 +152,11 @@ function compute_player_damage_taken() {
     var monster_total_attack = app.monster_attack + app.monster_rolled.total;
 
     enqueue_execution(
-        do_log('ATK ' + app.monster_attack + ' + ' + app.monster_rolled.total + 
-        ' = ' + monster_total_attack));
+        do_log, ['ATK ' + app.monster_attack + ' + ' + app.monster_rolled.total + 
+        ' = ' + monster_total_attack]);
     enqueue_execution
-    (do_log('DEF ' + app.player_toughness + ' + ' + app.player_rolled.total + 
-        ' = ' + player_total_toughness));
+    (do_log, ['DEF ' + app.player_toughness + ' + ' + app.player_rolled.total + 
+        ' = ' + player_total_toughness]);
 
     if (monster_total_attack > player_total_toughness) {
         var damage = monster_total_attack - player_total_toughness;
@@ -179,17 +172,17 @@ function compute_player_damage_taken() {
 function check_player_potions() {
     // Check Player Remaining Potions
     if (app.player_potions_are_over) {
-        enqueue_execution(do_log('No potions left.'));
+        enqueue_execution(do_log, ['No potions left.']);
     } else {
         enqueue_execution(
-            do_log('Player has ' + app.player_potions + ' potions left.'));
+            do_log, ['Player has ' + app.player_potions + ' potions left.']);
     }
 }
 
 function do_monster_attack() {
     // Execute Monster Attacking
-    app.roll_dice('Monster', app.monster_attack_dice);
-    app.roll_dice('Player', app.player_toughness_dice);
+    enqueue_execution(app.roll_dice, ['Monster', app.monster_attack_dice]);
+    enqueue_execution(app.roll_dice, ['Player', app.player_toughness_dice]);
     enqueue_execution(compute_player_damage_taken);
 }
 
@@ -197,7 +190,7 @@ function do_monster_turn() {
     // Execute Monster Turn
     if (app.game_finished || app.monster_is_dead) return;
 
-    enqueue_execution(do_log('MONSTER STARTS THEIR TURN.'));
+    enqueue_execution(do_log, ['MONSTER STARTS THEIR TURN.']);
 
     // Monster Infuriates every 3 turns
     if (app.turn_counter % 3 == 0) {
@@ -214,8 +207,8 @@ function do_monster_turn() {
 
 function do_player_attack() {
     // Execute Player Attacking
-    app.roll_dice('Player', app.player_attack_dice);
-    app.roll_dice('Monster', app.monster_toughness_dice);
+    enqueue_execution(app.roll_dice, ['Player', app.player_attack_dice]);
+    enqueue_execution(app.roll_dice, ['Monster', app.monster_toughness_dice]);
     enqueue_execution(compute_monster_damage_taken);
 }
 
@@ -291,10 +284,10 @@ function do_attack() {
     // Action Button Player Attack
     if (app.game_finished || app.game_resolving) return;
     enqueue_execution(set_game_resolving, true);
-    sound_action.play();
+    sounds['action'].play();
     start_next_turn();
-    enqueue_execution(do_log('PLAYER STARTS THEIR TURN.'));
-    enqueue_execution(do_log('Player tries to attack.'));
+    enqueue_execution(do_log, ['PLAYER STARTS THEIR TURN.']);
+    enqueue_execution(do_log, ['Player tries to attack.']);
     enqueue_execution(do_player_attack);
     enqueue_execution(check_monster_life);
     enqueue_execution(do_monster_turn);
@@ -304,14 +297,14 @@ function use_potion() {
     // Action Button Player Use Potion
     if (app.game_finished || app.game_resolving) return;
     if (app.player_potions_are_over) {
-        enqueue_execution(do_log('No potions left.'));
+        enqueue_execution(do_log, ['No potions left.']);
         return;
     }
     enqueue_execution(set_game_resolving, true);
-    sound_potion.play();
+    sounds['potion'].play();
     start_next_turn();
-    enqueue_execution(do_log('PLAYER STARTS THEIR TURN.'));
-    enqueue_execution(do_log('Player uses potion.'));
+    enqueue_execution(do_log, ['PLAYER STARTS THEIR TURN.']);
+    enqueue_execution(do_log, ['Player uses potion.']);
     enqueue_execution(set_player_potions, app.player_potions-1)
     enqueue_execution(do_player_restore_life, app.potion_power);
     enqueue_execution(check_player_potions);
@@ -328,9 +321,9 @@ function start_next_turn() {
 
 function start_game() {
     // Starts Game
-    enqueue_execution(do_log('Choose an action.'));
+    enqueue_execution(do_log, ['Choose an action.']);
 
-    sound_click.play();
+    sounds['click'].play();
     enqueue_execution(play_sound, 'theme');
     app.game_waiting = false;
 }
@@ -342,7 +335,7 @@ function reload() {
 
 function restart_game() {
     // Execute Restart
-    sound_click.play();
+    sounds['click'].play();
     enqueue_execution(reload, []);
 }
 
@@ -422,6 +415,12 @@ Vue.component('btn-message', {
             {{ msg }}
         </button>`
 });
+Vue.component('game-sound', {
+    props:['sound','loop'],
+    template: `<audio :id="'sound_'+sound" :loop="loop">
+            <source :src="'./assets/'+sound+'.wav'" type="audio/wav"></source>
+        </audio>`
+});
 Vue.component('history', {
     template: '<div id="history" ref="refhistory"><ul><slot /></ul></div>'
 });
@@ -499,6 +498,16 @@ var app = new Vue({
         log_list: [
             [get_timestamp(), "LET'S BATTLE!"],
             [get_timestamp(), "Click on START GAME to begin."]
+        ],
+
+        sound_list: [
+            ['theme', true],
+            ['damage', false],
+            ['fail', false],
+            ['potion', false],
+            ['alert', false],
+            ['click', false],
+            ['action', false]
         ]
     },
     computed: {
@@ -536,14 +545,15 @@ var app = new Vue({
         this.player_life = this.player_life_total;
         this.monster_life = this.monster_life_total;
 
+        // Start sounds
+        this.sound_list.forEach(function(sound_name){
+            sounds[sound_name[0]] = document.getElementById(
+                'sound_'+sound_name[0]
+            );
+        });
+
         // Start Queue Manager
         queue_manager = new QueueManager(500);
-
-        // Loop Background Music
-        sound_theme.addEventListener('ended', function () {
-            this.currentTime = 0;
-            this.play();
-        }, false);
     },
     methods: {
         log: function (text) {
@@ -554,20 +564,20 @@ var app = new Vue({
             // Roll a dice, log and return the result
             var dice = new Dice();
             var result = dice.roll(dices);
-            enqueue_execution(do_log(subject + ' rolled ' + dices + '.'));
-            
+            enqueue_execution(do_log, [subject + ' rolled ' + dices + '.']);
+
             if (result.critical > 0)
                 enqueue_execution(
                     do_log_with_sound, ['We have a CRITICAL ROLL!', 'alert']
                 );
-        
+
             if (result.failute > 0)
                 enqueue_execution(
                     do_log_with_sound, ['We have a FAILURE ROLL!', 'alert']
                 );
-        
+
             enqueue_execution(do_log(dice.verbose()));
-            
+
             if (subject == 'Player') {
                 app.player_rolled = result;
             } else if (subject == 'Monster') {
@@ -576,3 +586,11 @@ var app = new Vue({
         }
     }
 });
+
+window.onload = function() {
+    // Loop Background Music
+    sounds['theme'].addEventListener('ended', function () {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+};
